@@ -1,0 +1,26 @@
+<!doctype html>
+
+<html ng-app="app" ng-controller="addOrEditProductController">
+
+<head>
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+<!--    <script src="add_or_edit_product.js"></script>-->
+    <script src="logic.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<h2>Add or edit product</h2>
+<form name="addProductForm" novalidate ng-submit="createOrUpdateProduct()">
+    <input hidden type="text" ng-model="productFromForm.id">
+    Title:
+    <input id="npTitle" type="text" ng-model="productFromForm.title">
+    Price:
+    <input id="npPrice" type="number" ng-model="productFromForm.price">
+    <button type="submit">submit</button>
+</form>
+</body>
+</html>

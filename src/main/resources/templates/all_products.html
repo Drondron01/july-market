@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>July Market</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <div th:replace="~{navigation :: navigation(Market)}"/>
+
+    <h2>July Market</h2>
+    <h4>Фильтр</h4>
+
+    <form th:action="@{'/products'}" method="get">
+        <div class="form-group">
+            <label>Название</label>
+            <input th:value="${param.title != null ? param.title : ''}" class="form-control form-control-sm"
+                   name="title">
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Минимальная цена</label>
+                <input type="number" th:value="${param.min_price != null ? param.min_price : ''}"
+                       class="form-control form-control-sm" name="min_price">
+            </div>
+            <div class="form-group col-md-6">
+                <label>Максимальная цена</label>
+                <input type="number" th:value="${param.max_price != null ? param.max_price : ''}"
+                       class="form-control form-control-sm" name="max_price">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Категории</label>
+            <div class="form-check" th:each="c : ${@categoriesService.getAllCategories()}">
+                <input type="checkbox" class="form-check-input" name="categories" th:value="${c.id}">
+                <label class="form-check-label" th:text="${c.title}"></label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Применить</button>
+        <a th:href="@{/products}" type="button" class="btn btn-warning">Сброс фильтра</a>
+    </form>
+
+    <h4>Список товаров:</h4>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>Id</td>
+            <td>Название</td>
+            <td>Цена</td>
+            <td>Операции</td>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr th:each="p : ${products.getContent()}">
+            <td th:text="${p.id}"></td>
+            <td th:text="${p.title}"></td>
+            <td th:text="${p.price}"></td>
+            <td><a class="btn btn-primary" th:href="@{'/cart/add/' + ${p.id}}">Добавить в корзину</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${products.isFirst() ? 'disabled' : ''}">
+                <a class="page-link"
+                   th:href="@{'/products/?p='+ ${products.previousOrFirstPageable().getPageNumber() + 1} + ${filterDef}}">Назад</a>
+            </li>
+
+            <li class="page-item" th:classappend="${products.getNumber() + 1 == i ? 'active' : ''}"
+                th:each="i : ${#numbers.sequence((products.getNumber() + 1 > 2 ? products.getNumber() - 1 : 1), (products.getNumber() + 3 < products.getTotalPages() ? products.getNumber() + 3 : products.getTotalPages()) )}">
+                <a class="page-link" th:text="${i}" th:href="@{'/products/?p=' + ${i} + ${filterDef}}"></a>
+            </li>
+
+            <li class="page-item" th:classappend="${products.isLast() ? 'disabled' : ''}">
+                <a class="page-link"
+                   th:href="@{'/products/?p='+ ${products.nextOrLastPageable().getPageNumber() + 1} + ${filterDef}}">Вперед</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>
